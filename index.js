@@ -4,13 +4,14 @@ const github = require("@actions/github");
 try {
   const octokit = github.getOctokit(core.getInput("github_token"));
   const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
+  const branch = core.getInput("branch") || process.env.GITHUB_BASE_REF || process.env.GITHUB_REF_NAME || 'main'
   octokit.actions
     .listWorkflowRuns({
       owner,
       repo,
       workflow_id: core.getInput("workflow_id"),
       status: "success",
-      branch: core.getInput("branch"),
+      branch,
       event: "push",
     })
     .then((res) => {
